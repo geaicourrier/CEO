@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
-import { Download, Save, Upload, X, KeyRound } from 'lucide-react';
+import { Download, Save, Upload, X, KeyRound, RotateCcw } from 'lucide-react';
 import type { GameContent } from '@/game/content';
 import { APP_VERSION } from '@/game/constants';
 import {
   saveContentOverride,
+  clearContentOverride,
   buildExportPayload,
   normalizeContent,
 } from '@/game/contentStore';
+import { DEFAULT_CONTENT } from '@/game/content';
 import { writeAdminPin } from '../PinPad';
 import FoundersTab from './FoundersTab';
 import FoundationTab from './FoundationTab';
@@ -125,6 +127,14 @@ function AdminStudioModal({ content, onChange, onClose }: AdminStudioModalProps)
     } catch (err) {
       flash(err instanceof Error ? err.message : 'Import impossible : JSON invalide');
     }
+  };
+
+  const handleResetContent = () => {
+    if (!window.confirm("Rétablir le contenu d'origine ? Toutes les modifications locales du Studio seront écrasées.")) return;
+    clearContentOverride();
+    onChange(DEFAULT_CONTENT);
+    flash('Contenu réinitialisé — rechargement…');
+    window.location.reload();
   };
 
   const handlePinValidate = (pin: string) => {
@@ -278,6 +288,13 @@ function AdminStudioModal({ content, onChange, onClose }: AdminStudioModalProps)
               e.target.value = '';
             }}
           />
+          <button
+            type="button"
+            onClick={handleResetContent}
+            className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded border border-rose-500/30 px-2.5 py-1.5 font-ui text-[11px] text-rose-400 hover:bg-rose-500/10"
+          >
+            <RotateCcw className="h-3.5 w-3.5" /> Réinitialiser
+          </button>
           <button
             type="button"
             onClick={() => setPinModalOpen(true)}
