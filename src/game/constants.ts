@@ -1,7 +1,7 @@
 import { DollarSign, TrendingUp, Users, Briefcase } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
-export const APP_VERSION = '1.3.0';
+export const APP_VERSION = '1.4.0';
 
 export type GaugeId = 'cash' | 'traction' | 'morale' | 'board';
 

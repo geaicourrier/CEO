@@ -9,6 +9,8 @@ import { ADMIN_LIVE_EVENT, ADMIN_LIVE_EXIT_EVENT } from '@/components/AdminGate'
 import { loadUiTheme, themeToCssVars, subscribeUiTheme } from '@/game/uiTheme';
 import type { UiTheme } from '@/game/uiTheme';
 import { useEffect } from 'react';
+import { LanguageProvider } from '@/i18n/LanguageContext';
+import LanguageToggle from '@/components/LanguageToggle';
 
 type View = 'menu' | 'archetype' | 'game';
 
@@ -27,7 +29,7 @@ interface RunInit {
   passivesUsed?: Record<string, boolean>;
 }
 
-function App() {
+function AppInner() {
   const [view, setView] = useState<View>('menu');
   const [run, setRun] = useState<RunInit | null>(null);
   // Remounts GameScreen (fresh engine + state) on every new/resumed run.
@@ -86,6 +88,11 @@ function App() {
   return (
     <div className="flex h-[100dvh] w-full items-stretch justify-center overflow-hidden bg-corporate-abyss text-slate-100">
       <div id="app-shell" style={cssVars} className="relative flex h-full w-full flex-col justify-between overflow-hidden p-3">
+        <div className="pointer-events-none absolute right-3 top-3 z-30 flex justify-end">
+          <div className="pointer-events-auto">
+            <LanguageToggle />
+          </div>
+        </div>
         {view === 'menu' && !adminLive && <StartScreen onStartNew={startArchetypeSelect} onResume={resume} />}
         {view === 'archetype' && !adminLive && (
           <ArchetypeSelect onPick={startWithArchetype} onBack={() => setView('menu')} />
@@ -104,6 +111,14 @@ function App() {
       </div>
       <AdminGate />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <LanguageProvider>
+      <AppInner />
+    </LanguageProvider>
   );
 }
 

@@ -4,6 +4,7 @@ import { APP_VERSION, phaseLabel } from '@/game/constants';
 import { loadRun } from '@/game/save';
 import { useLongPress } from '@/hooks/useLongPress';
 import { requestAdminOpen } from './AdminGate';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface StartScreenProps {
   onStartNew: () => void;
@@ -16,6 +17,7 @@ const MENU_ITEMS = ['continue', 'new', 'rules'] as const;
 type MenuItem = (typeof MENU_ITEMS)[number];
 
 function StartScreen({ onStartNew, onResume }: StartScreenProps) {
+  const { t } = useLanguage();
   const [saved, setSaved] = useState(() => loadRun());
   const [modal, setModal] = useState<ModalKind>(null);
   const [highlight, setHighlight] = useState<MenuItem>('new');
@@ -63,7 +65,7 @@ function StartScreen({ onStartNew, onResume }: StartScreenProps) {
   }, [highlight, modal, items.join(','), saved]);
 
   const labelFor = (item: MenuItem) =>
-    item === 'continue' ? 'Continuer' : item === 'new' ? 'Nouvelle Partie' : 'Règles / Pitch';
+    item === 'continue' ? t('menu.continue') : item === 'new' ? t('menu.new') : t('menu.rules');
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center gap-8 px-4" aria-label="Menu principal">
@@ -79,12 +81,12 @@ function StartScreen({ onStartNew, onResume }: StartScreenProps) {
           Corporate Emergency Odyssey
         </p>
         <p className="mt-3 max-w-xs text-xs leading-relaxed text-slate-500">
-          Survivez à 20 trimestres de décisions impossibles. Quatre jauges, aucun filet.
+          {t('app.tagline')}
         </p>
       </div>
 
       {/* Menu */}
-      <nav className="flex w-full max-w-xs flex-col gap-2" aria-label="Options de jeu">
+      <nav className="flex w-full max-w-xs flex-col gap-2" aria-label={t('menu.options')}>
         {items.map((item) => (
           <button
             key={item}
@@ -119,9 +121,9 @@ function StartScreen({ onStartNew, onResume }: StartScreenProps) {
 
       {/* Modals */}
       {modal === 'confirmNew' && (
-        <Modal title="Recommencer ?" onClose={() => setModal(null)}>
+        <Modal title={t('menu.confirmNew.title')} onClose={() => setModal(null)}>
           <p className="text-sm leading-relaxed text-slate-300">
-            Une partie en cours existe. Voulez-vous recommencer à zéro ?
+            {t('menu.confirmNew.body')}
           </p>
           <div className="mt-4 grid grid-cols-2 gap-2">
             <button
@@ -129,7 +131,7 @@ function StartScreen({ onStartNew, onResume }: StartScreenProps) {
               onClick={() => setModal(null)}
               className="rounded border border-corporate-line bg-corporate-panel px-3 py-2 font-ui text-sm text-slate-300 hover:border-slate-400"
             >
-              Annuler
+              {t('menu.confirmNew.cancel')}
             </button>
             <button
               type="button"
@@ -139,29 +141,30 @@ function StartScreen({ onStartNew, onResume }: StartScreenProps) {
               }}
               className="rounded border border-red-500/50 bg-red-500/10 px-3 py-2 font-ui text-sm font-semibold text-red-300 hover:bg-red-500/20"
             >
-              Recommencer
+              {t('menu.confirmNew.confirm')}
             </button>
           </div>
         </Modal>
       )}
 
       {modal === 'rules' && (
-        <Modal title="Règles / Pitch" onClose={() => setModal(null)}>
+        <Modal title={t('rules.title')} onClose={() => setModal(null)}>
           <ul className="space-y-2.5 text-sm leading-relaxed text-slate-300">
             <li>
-              <strong className="text-slate-100">Objectif :</strong> survivre 20 trimestres (5 ans) et atteindre
-              l'IPO Triomphale.
+              <strong className="text-slate-100">{t('rules.objective')} :</strong>{' '}
+              {t('rules.objectiveBody')}
             </li>
             <li>
-              <strong className="text-slate-100">Les 4 jauges :</strong> 💰 Cash, ⭐ Traction, 👥 Morale,
-              👔 Board. Si une jauge atteint 0 ou 100, c'est la fin.
+              <strong className="text-slate-100">{t('rules.gauges')} :</strong>{' '}
+              {t('rules.gaugesBody')}
             </li>
             <li>
-              <strong className="text-slate-100">Contrôle clavier :</strong> ←/→ pour pencher la carte,
-              Entrée pour valider. Sur mobile : glissez la carte ou touchez un choix.
+              <strong className="text-slate-100">{t('rules.controls')} :</strong>{' '}
+              {t('rules.controlsBody')}
             </li>
             <li>
-              <strong className="text-slate-100">Pause :</strong> touchez la roue dentée ou appuyez sur P en jeu.
+              <strong className="text-slate-100">{t('rules.pause')} :</strong>{' '}
+              {t('rules.pauseBody')}
             </li>
           </ul>
         </Modal>
@@ -171,6 +174,7 @@ function StartScreen({ onStartNew, onResume }: StartScreenProps) {
 }
 
 function Modal({ title, children, onClose }: { title: string; children: React.ReactNode; onClose: () => void }) {
+  const { t } = useLanguage();
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -187,7 +191,7 @@ function Modal({ title, children, onClose }: { title: string; children: React.Re
       <div className="w-full max-w-sm rounded-lg border border-corporate-line bg-corporate-panel p-5 shadow-xl">
         <div className="flex items-center justify-between">
           <h2 className="font-press text-base font-bold text-slate-100">{title}</h2>
-          <button type="button" onClick={onClose} aria-label="Fermer" className="text-slate-500 hover:text-slate-300">
+          <button type="button" onClick={onClose} aria-label={t('common.close')} className="text-slate-500 hover:text-slate-300">
             <X className="h-4 w-4" />
           </button>
         </div>
