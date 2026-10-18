@@ -1,0 +1,133 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-corporate-abyss font-ui text-slate-100 antialiased;
+    touch-action: pan-y;
+    overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Zero pinch-to-zoom, zero global scroll: one screen = one function. */
+  #root {
+    @apply h-[100dvh] overflow-hidden;
+  }
+
+  /* Mobile app shell: fixed chassis, container-query grounded, centered on desktop. */
+  #app-shell {
+    height: 100%;
+    max-width: var(--app-max-width, 430px);
+    margin: 0 auto;
+    container-type: inline-size;
+    container-name: app;
+    font-size: calc(1rem * var(--font-scale, 1));
+  }
+}
+
+@layer utilities {
+  .animate-delta-float {
+    animation: delta-float 1.4s ease-out forwards;
+  }
+
+  .animate-gauge-shake {
+    animation: gauge-shake 0.5s ease-in-out;
+  }
+
+  .animate-card-enter {
+    animation: card-enter 220ms ease-out;
+  }
+}
+
+@keyframes card-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes delta-float {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 6px);
+  }
+  15% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  80% {
+    opacity: 1;
+    transform: translate(-50%, -6px);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -12px);
+  }
+}
+
+@keyframes gauge-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-2px);
+  }
+  40% {
+    transform: translateX(2px);
+  }
+  60% {
+    transform: translateX(-2px);
+  }
+  80% {
+    transform: translateX(1px);
+  }
+}
+
+@keyframes pin-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  15% {
+    transform: translateX(-8px);
+  }
+  30% {
+    transform: translateX(8px);
+  }
+  45% {
+    transform: translateX(-6px);
+  }
+  60% {
+    transform: translateX(6px);
+  }
+  75% {
+    transform: translateX(-3px);
+  }
+}
+
+.animate-pin-shake {
+  animation: pin-shake 0.45s ease-in-out;
+}
+
+@keyframes gauge-fatal-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+  }
+}
+
+.animate-gauge-fatal-pulse {
+  animation: gauge-fatal-pulse 1.2s ease-out infinite;
+}
