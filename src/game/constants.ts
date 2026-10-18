@@ -1,7 +1,7 @@
-import { DollarSign, Star, Users, Briefcase } from 'lucide-react';
+import { DollarSign, TrendingUp, Users, Briefcase } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
-export const APP_VERSION = '1.2.0';
+export const APP_VERSION = '1.3.0';
 
 export type GaugeId = 'cash' | 'traction' | 'morale' | 'board';
 
@@ -25,9 +25,9 @@ export const GAUGES: GaugeDef[] = [
   },
   {
     id: 'traction',
-    emoji: '⭐',
+    emoji: '📈',
     label: 'Traction',
-    Icon: Star,
+    Icon: TrendingUp,
     text: 'text-gauge-traction',
     bar: 'bg-gauge-traction',
   },

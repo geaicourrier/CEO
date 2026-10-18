@@ -1,10 +1,12 @@
+import { DollarSign, TrendingUp, Users, Briefcase } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import type { Impacts } from '@/game/content';
 
-const GAUGE_FIELDS: { id: keyof Impacts; icon: string; accent: string }[] = [
-  { id: 'cash', icon: '💵', accent: 'text-gauge-cash' },
-  { id: 'traction', icon: '📈', accent: 'text-gauge-traction' },
-  { id: 'morale', icon: '🧠', accent: 'text-gauge-morale' },
-  { id: 'board', icon: '🏛️', accent: 'text-gauge-board' },
+const GAUGE_FIELDS: { id: keyof Impacts; Icon: LucideIcon; accent: string }[] = [
+  { id: 'cash', Icon: DollarSign, accent: 'text-gauge-cash' },
+  { id: 'traction', Icon: TrendingUp, accent: 'text-gauge-traction' },
+  { id: 'morale', Icon: Users, accent: 'text-gauge-morale' },
+  { id: 'board', Icon: Briefcase, accent: 'text-gauge-board' },
 ];
 
 export function GaugeImpactsEditor({
@@ -23,9 +25,9 @@ export function GaugeImpactsEditor({
   };
   return (
     <div className="grid grid-cols-4 gap-1.5">
-      {GAUGE_FIELDS.map(({ id, icon, accent }) => (
+      {GAUGE_FIELDS.map(({ id, Icon, accent }) => (
         <label key={id} className="flex flex-col items-center gap-0.5">
-          <span className={`text-sm leading-none ${accent}`} title={id}>{icon}</span>
+          <Icon className={`h-3.5 w-3.5 ${accent}`} aria-label={id} />
           <input
             type="number"
             inputMode="numeric"
@@ -56,10 +58,11 @@ export function GaugeIconLabels({
   };
   return (
     <div className="grid grid-cols-2 gap-x-2 gap-y-1.5">
-      {GAUGE_FIELDS.map(({ id, icon, accent }) => (
+      {GAUGE_FIELDS.map(({ id, Icon, accent }) => (
         <label key={id} className="flex items-center gap-1.5">
-          <span className={`w-16 shrink-0 font-ui text-[10px] font-bold uppercase tracking-widest ${accent}`}>
-            {icon} {id === 'morale' ? 'Morale' : id.charAt(0).toUpperCase() + id.slice(1)}
+          <span className={`flex w-16 shrink-0 items-center gap-1 font-ui text-[10px] font-bold uppercase tracking-widest ${accent}`}>
+            <Icon className="h-3 w-3" />
+            {id === 'morale' ? 'Moral' : id.charAt(0).toUpperCase() + id.slice(1)}
           </span>
           <input
             type="number"

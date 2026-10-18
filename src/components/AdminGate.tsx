@@ -43,7 +43,6 @@ function AdminGate() {
     <AdminStudioModal
       content={content}
       onChange={setContent}
-      onReset={() => setContent(getActiveContent())}
       onClose={() => setStage('closed')}
     />
   );

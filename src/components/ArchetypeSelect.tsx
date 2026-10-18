@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Cpu, Handshake, Network, LifeBuoy, Users } from 'lucide-react';
+import { Cpu, Handshake, Network, LifeBuoy, Users, Crown, FlaskConical, Landmark } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { Archetype } from '@/game/archetypes';
 import { rollArchetypeChoices } from '@/game/archetypes';
@@ -10,6 +10,9 @@ const ICONS: Record<string, LucideIcon> = {
   network: Network,
   lifebuoy: LifeBuoy,
   users: Users,
+  crown: Crown,
+  flask: FlaskConical,
+  landmark: Landmark,
 };
 
 interface ArchetypeSelectProps {

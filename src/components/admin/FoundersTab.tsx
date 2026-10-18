@@ -24,7 +24,7 @@ function FoundersTab({ founders, onChange }: FoundersTabProps) {
             onClick={() => setIdx(i)}
             aria-pressed={i === idx}
             title={p.name}
-            className={`aspect-video truncate rounded border px-1 py-0.5 font-ui text-xs font-semibold transition-colors ${
+            className={`truncate rounded border px-1.5 py-2 font-ui text-[11px] font-semibold leading-tight transition-colors ${
               i === idx
                 ? 'border-slate-300 bg-corporate-edge text-slate-100'
                 : 'border-corporate-line bg-corporate-abyss text-slate-400 hover:border-slate-400'

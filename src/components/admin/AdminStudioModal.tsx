@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { Download, RotateCcw, Save, Upload, X, KeyRound } from 'lucide-react';
+import { Download, Save, Upload, X, KeyRound } from 'lucide-react';
 import type { GameContent } from '@/game/content';
 import { APP_VERSION } from '@/game/constants';
 import {
   saveContentOverride,
-  clearContentOverride,
   buildExportPayload,
   normalizeContent,
 } from '@/game/contentStore';
@@ -16,13 +15,12 @@ import PerksTab from './PerksTab';
 import DesignTab from './DesignTab';
 import LiveInspector from './LiveInspector';
 import PinChangeModal from './PinChangeModal';
-import { loadUiTheme, saveUiTheme, publishUiTheme, normalizeUiTheme, DEFAULT_UI_THEME } from '@/game/uiTheme';
+import { loadUiTheme, saveUiTheme, publishUiTheme, normalizeUiTheme } from '@/game/uiTheme';
 import type { UiTheme } from '@/game/uiTheme';
 
 interface AdminStudioModalProps {
   content: GameContent;
   onChange: (next: GameContent) => void;
-  onReset: () => void;
   onClose: () => void;
 }
 
@@ -36,7 +34,7 @@ const TABS: { id: TabId; label: string }[] = [
   { id: 'design', label: 'Design UI' },
 ];
 
-function AdminStudioModal({ content, onChange, onReset, onClose }: AdminStudioModalProps) {
+function AdminStudioModal({ content, onChange, onClose }: AdminStudioModalProps) {
   const [tab, setTab] = useState<TabId>('founders');
   const [toast, setToast] = useState<string | null>(null);
   const [pinModalOpen, setPinModalOpen] = useState(false);
@@ -129,15 +127,6 @@ function AdminStudioModal({ content, onChange, onReset, onClose }: AdminStudioMo
     }
   };
 
-  const handleReset = () => {
-    if (window.confirm('Réinitialiser tout le contenu aux valeurs d\'usine ? Les modifications locales seront perdues.')) {
-      clearContentOverride();
-      handleThemeChange({ ...DEFAULT_UI_THEME });
-      onReset();
-      flash('Contenu réinitialisé aux valeurs d\'usine');
-    }
-  };
-
   const handlePinValidate = (pin: string) => {
     writeAdminPin(pin);
     setPinModalOpen(false);
@@ -167,33 +156,37 @@ function AdminStudioModal({ content, onChange, onReset, onClose }: AdminStudioMo
   }
 
   return (
-    <div className="absolute inset-0 z-50 flex flex-col bg-corporate-abyss" role="dialog" aria-modal="true" aria-label="Studio d'édition du contenu">
-      {/* Top nav */}
-      <header className="flex shrink-0 flex-row flex-nowrap items-center gap-1.5 border-b border-corporate-edge px-2 py-1.5">
-        <h1 className="mr-2 font-press text-xs font-bold uppercase tracking-widest text-slate-200">Studio</h1>
-        {TABS.map((t) => (
+    <div className="absolute inset-0 z-50 flex flex-col overflow-x-hidden bg-corporate-abyss" role="dialog" aria-modal="true" aria-label="Studio d'édition du contenu">
+      {/* Top nav — line 1: title + close, line 2: tabs grid */}
+      <header className="shrink-0 overflow-x-hidden border-b border-corporate-edge px-2 py-1.5">
+        <div className="flex items-center justify-between">
+          <h1 className="font-press text-xs font-bold uppercase tracking-widest text-slate-200">Studio d'édition</h1>
           <button
-            key={t.id}
             type="button"
-            onClick={() => setTab(t.id)}
-            aria-pressed={tab === t.id}
-            className={`whitespace-nowrap rounded border px-2 py-1 font-ui text-[10px] font-semibold transition-colors ${
-              tab === t.id
-                ? 'border-slate-300 bg-corporate-edge text-slate-100'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
+            onClick={onClose}
+            aria-label="Fermer le studio"
+            className="rounded border border-corporate-line bg-corporate-panel p-1.5 text-slate-400 hover:border-slate-400 hover:text-slate-200"
           >
-            {t.label}
+            <X className="h-4 w-4" />
           </button>
-        ))}
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Fermer le studio"
-          className="ml-auto rounded border border-corporate-line bg-corporate-panel p-1.5 text-slate-400 hover:border-slate-400 hover:text-slate-200"
-        >
-          <X className="h-4 w-4" />
-        </button>
+        </div>
+        <div className="mt-1.5 grid grid-cols-5 gap-1.5">
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => setTab(t.id)}
+              aria-pressed={tab === t.id}
+              className={`truncate rounded border px-1.5 py-1 font-ui text-[10px] font-semibold transition-colors ${
+                tab === t.id
+                  ? 'border-slate-300 bg-corporate-edge text-slate-100'
+                  : 'border-transparent text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
       </header>
 
       {/* Tab body */}
@@ -287,15 +280,6 @@ function AdminStudioModal({ content, onChange, onReset, onClose }: AdminStudioMo
           />
           <button
             type="button"
-            onClick={handleReset}
-            className="flex items-center gap-1.5 rounded border border-red-500/40 bg-red-500/10 px-2.5 py-1.5 font-ui text-[11px] text-red-300 hover:bg-red-500/20"
-          >
-            <RotateCcw className="h-3.5 w-3.5" /> Défauts
-          </button>
-
-          {/* PIN change */}
-          <button
-            type="button"
             onClick={() => setPinModalOpen(true)}
             className="ml-auto flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded border border-corporate-line bg-corporate-panel px-2.5 py-1.5 font-ui text-[11px] text-slate-300 hover:border-slate-400"
           >
@@ -303,7 +287,7 @@ function AdminStudioModal({ content, onChange, onReset, onClose }: AdminStudioMo
           </button>
         </div>
         <p className="mt-1 text-center font-ui text-[9px] uppercase tracking-widest text-slate-600">
-          v{APP_VERSION} · Studio d'édition
+          V{APP_VERSION.toUpperCase()} · STUDIO D'ÉDITION
         </p>
         {toast && (
           <p className="absolute bottom-14 left-1/2 -translate-x-1/2 rounded border border-corporate-line bg-corporate-panel px-3 py-1.5 font-ui text-[11px] text-slate-200 shadow-lg">
